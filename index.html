@@ -1,0 +1,910 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>renpei cai [chai]</title>
+<meta name="description" content="Renpei Cai — software engineer, ML researcher at UW RAIVN Lab / Ai2, and DJ (CHAI). CS @ University of Washington.">
+<meta property="og:title" content="renpei cai [chai]">
+<meta property="og:description" content="software engineer · ml research · dj">
+<meta name="theme-color" content="#2337A6">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%232337A6'/%3E%3Cpath d='M12 3.5l2.5 5.5 6 .6-4.5 4 1.4 5.9L12 16.4l-5.4 3.1 1.4-5.9-4.5-4 6-.6z' fill='%23F7F24A'/%3E%3C/svg%3E">
+<script>if(!matchMedia('(prefers-reduced-motion: reduce)').matches)document.documentElement.classList.add('motion');else addEventListener('DOMContentLoaded',function(){document.querySelectorAll('video[autoplay]').forEach(function(v){v.removeAttribute('autoplay');v.pause();v.controls=true})})</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo+Narrow:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ground:#2337A6; --panel:#0F1A5C; --ink:#F4F2EA; --muted:#C3CAF2; --soft:#A9C4FF;
+  --accent:#F7F24A; --line:rgba(244,242,234,.28); --line-soft:rgba(244,242,234,.18);
+  --mono:'Space Mono',ui-monospace,monospace; --sans:'Archivo Narrow','Arial Narrow',sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:#05060C;color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--ink);text-decoration:none}
+a:hover{color:var(--accent)}
+a:focus-visible{outline:2px solid var(--accent);outline-offset:4px;border-radius:4px}
+h1,h2,p{margin:0}
+
+.page{position:relative;overflow:hidden;min-height:100vh;
+  background:linear-gradient(180deg,var(--ground) 0%,var(--ground) 38%,#101A57 68%,#05060C 100%)}
+.wrap{position:relative;z-index:1;max-width:1200px;margin:0 auto;padding:0 40px}
+
+/* fog at the bottom of the page */
+.fog{position:absolute;left:-10%;right:-10%;bottom:0;height:760px;pointer-events:none;z-index:0;filter:blur(28px)}
+.fog span{position:absolute;inset:0;animation:drift 38s ease-in-out infinite alternate}
+.fog span:nth-child(1){background:radial-gradient(ellipse 45% 38% at 18% 92%,rgba(214,222,255,.20),transparent 70%),radial-gradient(ellipse 40% 30% at 70% 98%,rgba(214,222,255,.16),transparent 70%)}
+.fog span:nth-child(2){animation-duration:52s;animation-direction:alternate-reverse;background:radial-gradient(ellipse 50% 34% at 48% 100%,rgba(200,210,255,.18),transparent 70%),radial-gradient(ellipse 30% 26% at 92% 88%,rgba(230,234,255,.12),transparent 70%)}
+.fog span:nth-child(3){animation-duration:67s;background:linear-gradient(to top,rgba(210,218,255,.14),rgba(210,218,255,.05) 40%,transparent 85%)}
+@keyframes drift{from{transform:translateX(-4%)}to{transform:translateX(4%)}}
+
+/* header */
+.top{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:16px;padding:28px 0;font-family:var(--mono);font-size:13px;letter-spacing:.02em}
+.top nav{display:flex;flex-wrap:wrap;gap:28px}
+
+/* hero */
+.hero{display:flex;flex-wrap:wrap;gap:48px;padding:72px 0 56px}
+.hero-main{flex:999 1 560px;min-width:0;display:flex;flex-direction:column;gap:28px}
+.kicker,.mono{font-family:var(--mono);font-size:13px;color:var(--muted)}
+.name-row{display:flex;align-items:flex-start;gap:16px}
+.name{font-size:clamp(56px,10vw,128px);line-height:.92;font-weight:500;letter-spacing:-.02em}
+.star{flex:none;width:56px;height:56px;margin-top:8px;cursor:pointer;transition:transform .5s cubic-bezier(.2,.8,.2,1)}
+.star:hover{transform:rotate(72deg) scale(1.15)}
+.star:active{transform:rotate(144deg) scale(1.3)}
+.intro{max-width:640px;font-size:24px;line-height:1.4}
+.vstrip{flex:none;margin:0;font-family:var(--mono);font-size:12px;color:var(--muted);letter-spacing:.04em;writing-mode:vertical-rl;transform:rotate(180deg)}
+
+.portrait{flex:0 1 320px;align-self:flex-start;margin:0;aspect-ratio:4/5;background:var(--panel);border-radius:10px;position:relative;overflow:hidden;display:flex;align-items:flex-end;padding:16px;transition:transform .35s cubic-bezier(.2,.8,.2,1)}
+.portrait:hover{transform:rotate(-1.5deg) scale(1.03)}
+.portrait .mono{color:var(--soft);font-size:12px;line-height:1.5}
+.portrait img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+/* now playing */
+.np{display:flex;align-items:center;gap:18px;background:var(--panel);border-radius:14px;padding:16px 20px;max-width:520px}
+.np-art{width:52px;height:52px;border-radius:6px;background:var(--ground);display:flex;align-items:center;justify-content:center;flex:none}
+.np-body{display:flex;flex-direction:column;gap:6px;min-width:0;flex:1}
+.np-label{font-family:var(--mono);font-size:12px;color:var(--soft)}
+.np-title{font-size:18px;font-weight:600}
+.np-sub{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.wave{display:flex;align-items:flex-end;gap:2px;height:18px}
+.wave span{width:3px;border-radius:1px;background:rgba(244,242,234,.35);transform-origin:bottom;animation:eq 1s ease-in-out infinite alternate}
+.wave span.on{background:var(--accent)}
+@keyframes eq{0%{transform:scaleY(.3)}45%{transform:scaleY(1)}100%{transform:scaleY(.55)}}
+
+/* pop interaction */
+.pop{transition:transform .25s cubic-bezier(.2,.8,.2,1)}
+.pop:hover{transform:scale(1.08)}
+.pop:active{transform:scale(1.15)}
+
+/* sections */
+section.block{padding:56px 0;border-top:1px solid var(--line)}
+.sec-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:12px;margin-bottom:28px}
+h2{font-size:44px;font-weight:500}
+
+.tracks{list-style:none;margin:0;padding:0}
+.tracks li{display:flex;flex-wrap:wrap;gap:8px 32px;padding:22px 0;border-bottom:1px solid var(--line-soft);align-items:baseline}
+.tracks .n{width:32px}
+.tracks .body{flex:999 1 420px;min-width:0;display:flex;flex-direction:column;gap:6px}
+.tracks .org{font-size:26px;font-weight:600}
+.tracks .role{font-weight:400;color:var(--muted)}
+.tracks .line{font-size:18px;line-height:1.45}
+.tracks .when{flex:1 0 170px;text-align:right}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:32px}
+.proj{display:flex;flex-direction:column;gap:12px}
+.cover{aspect-ratio:1/1;background:var(--panel);border-radius:6px;display:flex;flex-direction:column;justify-content:space-between;padding:16px;overflow:hidden;position:relative}
+.cover img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.cover .shade{position:absolute;inset:0;background:linear-gradient(180deg,rgba(15,26,92,.8) 0%,rgba(15,26,92,0) 30%,rgba(15,26,92,0) 70%,rgba(15,26,92,.85) 100%)}
+.stat{font-size:40px;font-weight:600;line-height:1;color:var(--accent);position:relative}
+.cover .mono{color:var(--soft);font-size:12px;position:relative}
+.proj h3{margin:0;font-size:22px;font-weight:600}
+.proj p{font-size:17px;line-height:1.4}
+.proj .mono{font-size:12px}
+
+.frames{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.frame{aspect-ratio:7/4;background:var(--panel);border-radius:4px;display:flex;align-items:flex-end;padding:10px;font-family:var(--mono);font-size:11px;color:var(--soft);overflow:hidden;position:relative}
+.frame img,.frame video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.frame .cap{position:relative;z-index:1;background:rgba(15,26,92,.6);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);padding:3px 8px;border-radius:999px;color:var(--ink)}
+.research-text{display:flex;flex-wrap:wrap;gap:20px 56px;margin-top:24px}
+.research-text p{flex:1 1 360px;font-size:18px;line-height:1.45}
+
+.duo{display:flex;flex-wrap:wrap;gap:56px}
+.duo > div{flex:1 1 380px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.duo p{font-size:18px;line-height:1.45}
+.play{align-self:flex-start;display:inline-flex;align-items:center;gap:10px;min-height:44px;padding:0 22px;border-radius:999px;background:var(--ink);color:var(--panel);font-weight:600;font-size:18px}
+.play:hover{color:var(--panel)}
+.notes{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:14px;font-size:18px;line-height:1.4}
+.notes .mono{font-size:12px}
+
+.skills{list-style:none;margin:0;padding:0}
+.skills li{display:flex;flex-wrap:wrap;gap:12px 32px;padding:20px 0;border-bottom:1px solid var(--line-soft);align-items:center}
+.skills .cat{flex:0 0 180px}
+.chips{flex:1 1 420px;min-width:0;display:flex;flex-wrap:wrap;gap:10px}
+.chip{font-size:17px;line-height:1;padding:9px 15px;border-radius:999px;border:1px solid var(--line);
+  transition:background .3s,color .3s,border-color .3s,transform .4s cubic-bezier(.16,1,.3,1)}
+.chip:hover{background:var(--ink);color:var(--panel);border-color:var(--ink);transform:translateY(-3px)}
+
+footer{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:24px;padding:48px 0 64px;border-top:1px solid var(--line)}
+.big-link{font-size:56px;font-weight:500;letter-spacing:-.01em;display:inline-block}
+.links{display:flex;flex-wrap:wrap;gap:24px;font-family:var(--mono);font-size:13px}
+
+/* ---------- motion layer (only active when .motion is set, i.e. not reduced-motion) ---------- */
+:root{--ease-out:cubic-bezier(.16,1,.3,1)}
+
+/* film grain */
+.grain{display:none}
+.motion .grain{display:block;position:fixed;top:-50%;left:-50%;width:200%;height:200%;pointer-events:none;z-index:50;opacity:.07;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  animation:grain 1.2s steps(6) infinite}
+@keyframes grain{0%,100%{transform:translate(0,0)}20%{transform:translate(-4%,3%)}40%{transform:translate(3%,-5%)}60%{transform:translate(-2%,4%)}80%{transform:translate(5%,1%)}}
+
+/* cursor spotlight */
+.spot{position:absolute;inset:0;pointer-events:none;z-index:0;opacity:0;transition:opacity .6s ease;
+  background:radial-gradient(520px circle at var(--mx,50%) var(--my,0),rgba(169,196,255,.16),transparent 60%)}
+.motion .spot.on{opacity:1}
+
+/* hero name: letters rise out of a blur */
+.motion .name:not(.split){opacity:0}
+.name .w{display:inline-block;white-space:nowrap}
+.motion .name .c{display:inline-block;animation:rise 1.2s var(--ease-out) both;animation-delay:calc(var(--i) * 38ms + 120ms)}
+@keyframes rise{from{opacity:0;transform:translateY(.4em) rotate(7deg);filter:blur(12px)}to{opacity:1;transform:none;filter:blur(0)}}
+.motion .star{animation:starIn 1.4s var(--ease-out) .85s backwards}
+@keyframes starIn{from{opacity:0;transform:scale(0) rotate(-220deg)}}
+.motion .portrait{animation:unveil 1.5s var(--ease-out) .35s backwards}
+@keyframes unveil{from{clip-path:inset(100% 0 0 0 round 10px);transform:translateY(40px)}to{clip-path:inset(0 0 0 0 round 10px)}}
+
+/* scroll reveals */
+.motion .rv{opacity:0;transform:translateY(28px);filter:blur(6px);
+  transition:opacity 1s var(--ease-out),transform 1s var(--ease-out),filter 1s var(--ease-out);transition-delay:var(--d,0ms)}
+.motion .rv.in{opacity:1;transform:none;filter:none}
+
+/* divider lines draw in */
+section.block,footer{position:relative}
+.motion section.block,.motion footer{border-top-color:transparent}
+.motion section.block::before,.motion footer::before{content:'';position:absolute;top:-1px;left:0;right:0;height:1px;background:var(--line);
+  transform:scaleX(0);transform-origin:left;transition:transform 1.6s var(--ease-out)}
+.motion section.block.in::before,.motion footer.in::before{transform:none}
+
+/* track rows: accent underline sweep */
+.tracks li{position:relative}
+.tracks li::after{content:'';position:absolute;left:0;right:0;bottom:-1px;height:1px;background:var(--accent);
+  transform:scaleX(0);transform-origin:right;transition:transform .7s var(--ease-out)}
+.tracks li:hover::after{transform:scaleX(1);transform-origin:left}
+.tracks .org,.tracks .n{transition:transform .6s var(--ease-out),color .3s}
+.tracks li:hover .org{transform:translateX(10px)}
+.tracks li:hover .n{color:var(--accent)}
+
+/* light streak across cards */
+.cover::after,.frame::after{content:'';position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(105deg,transparent 35%,rgba(255,255,255,.16) 50%,transparent 65%);transform:translateX(-110%)}
+.cover:hover::after,.frame:hover::after{transform:translateX(110%);transition:transform 1s var(--ease-out)}
+
+/* 3d tilt on project covers (transform is set from js) */
+.motion .cover.tilt{transition:transform .5s var(--ease-out),box-shadow .5s var(--ease-out);will-change:transform}
+.motion .cover.tilt.tilting{transition:transform .12s linear,box-shadow .3s;box-shadow:0 24px 50px -18px rgba(3,5,26,.75)}
+
+/* inline text links */
+.inline-link{text-decoration:underline;text-decoration-color:var(--accent);text-decoration-thickness:1.5px;text-underline-offset:4px}
+
+/* hologram: full image projected above a cropped cover on hover */
+.holo,.beam{position:fixed;pointer-events:none;z-index:70}
+.holo{left:0;top:0}
+.holo-inner{position:relative;width:100%;height:100%;border-radius:12px;overflow:hidden;opacity:0;background:rgba(15,26,92,.4);
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.22),0 1px 2px rgba(3,5,26,.25),0 18px 40px -12px rgba(3,5,26,.55),0 50px 100px -30px rgba(3,5,26,.5)}
+.holo-inner img{display:block;width:100%;height:100%;object-fit:contain;filter:saturate(1.1) contrast(1.05);animation:holoFlicker 4s infinite}
+.holo-inner::before{content:'';position:absolute;inset:0;z-index:1;mix-blend-mode:screen;
+  background:repeating-linear-gradient(0deg,rgba(255,255,255,.05) 0 1px,transparent 1px 4px);animation:holoScan 8s linear infinite}
+.holo-inner::after{content:'';position:absolute;inset:0;z-index:1;mix-blend-mode:screen;
+  background:linear-gradient(115deg,transparent 30%,rgba(255,255,255,.14) 45%,transparent 60%);
+  background-size:250% 100%;animation:holoSheen 3.5s ease-in-out infinite alternate}
+.holo-tag{position:absolute;left:12px;top:12px;z-index:2;font-family:var(--mono);font-size:11px;letter-spacing:.04em;color:var(--ink);
+  background:rgba(15,26,92,.55);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);padding:4px 10px;border-radius:999px;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.18)}
+.beam{inset:0;opacity:0;filter:blur(6px)}
+@keyframes holoScan{to{background-position:0 90px}}
+@keyframes holoSheen{from{background-position:0 0}to{background-position:100% 0}}
+@keyframes holoFlicker{0%,46%,49%,100%{opacity:1}47%{opacity:.9}48%{opacity:.97}}
+
+/* "press play" placeholder: screen shake + red flash + coming-soon error */
+.err-flash{position:fixed;inset:0;pointer-events:none;z-index:80;opacity:0;
+  background:radial-gradient(ellipse at center,rgba(255,40,60,.10) 30%,rgba(255,20,45,.42) 100%)}
+.err-toast{position:fixed;left:0;top:0;z-index:81;pointer-events:none;display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:13px;color:#FFE3E6;white-space:nowrap;padding:10px 16px;border-radius:10px;
+  background:rgba(40,6,14,.88);border:1px solid rgba(255,70,90,.7);
+  box-shadow:0 0 0 4px rgba(255,40,60,.12),0 18px 40px -12px rgba(3,5,26,.7)}
+.err-toast b{color:#FF5468;font-weight:700}
+
+/* link hover: bubble burst + "click me!" */
+.bubble,.clickme{position:fixed;left:0;top:0;pointer-events:none;z-index:60}
+.bubble{border-radius:50%;border:1.5px solid rgba(244,242,234,.75);
+  background:radial-gradient(circle at 32% 30%,rgba(255,255,255,.75) 0 14%,rgba(169,196,255,.18) 38%,rgba(169,196,255,.05) 70%)}
+.clickme{font-family:var(--mono);font-size:12px;letter-spacing:.02em;color:var(--ink);white-space:nowrap;
+  padding:7px 13px;border-radius:999px;border:1.5px solid rgba(244,242,234,.6);
+  background:radial-gradient(circle at 25% 20%,rgba(255,255,255,.35),rgba(169,196,255,.14) 60%);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);box-shadow:0 6px 24px -8px rgba(3,5,26,.6)}
+
+/* meteor (canvas stays on screen; the meteor is positioned in page space by js) */
+.orb{display:none}
+.motion .orb{display:block;position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+
+@media (max-width:760px){
+  .wrap{padding:0 22px}
+  .vstrip{display:none}
+  .hero{padding:40px 0}
+  .portrait{flex-basis:100%;max-width:340px}
+  .intro{font-size:20px}
+  h2{font-size:36px}
+  .tracks .when{text-align:left}
+  .skills .cat{flex-basis:100%}
+  .frames{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .big-link{font-size:40px}
+}
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  .fog span,.wave span{animation:none}
+  .pop,.star,.portrait{transition:none}
+}
+</style>
+</head>
+<body>
+<div class="page">
+  <canvas class="orb" aria-hidden="true"></canvas>
+  <div class="fog" aria-hidden="true"><span></span><span></span><span></span></div>
+  <div class="spot" aria-hidden="true"></div>
+  <div class="grain" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <header class="top">
+      <a href="#top">renpei cai · seattle · cs @ uw '27</a>
+      <nav aria-label="Primary">
+        <a href="#work">work</a>
+        <a href="#projects">projects</a>
+        <a href="#research">research</a>
+        <a href="#music">music</a>
+        <a href="https://github.com/Avery072" target="_blank" rel="noopener">github ↗</a>
+        <a href="resume.pdf" target="_blank" rel="noopener">resume ↗</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="top" class="hero">
+        <div class="hero-main">
+          <p class="kicker">software engineer · ml research · dj</p>
+          <div class="name-row">
+            <h1 class="name">renpei cai [chai]</h1>
+            <svg class="star" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3.1 6.9 7.4.7-5.6 5 1.7 7.4L12 17.7l-6.6 3.8 1.7-7.4-5.6-5 7.4-.7z" fill="#F7F24A"/></svg>
+          </div>
+          <p class="intro">i ship full-stack systems that real businesses run on, train multi-view video generation models at ai2, and play sets around seattle as chai.</p>
+
+          <div class="np">
+            <div class="np-art pop">
+              <svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 1.5l3.1 6.9 7.4.7-5.6 5 1.7 7.4L12 17.7l-6.6 3.8 1.7-7.4-5.6-5 7.4-.7z" fill="#F7F24A"/></svg>
+            </div>
+            <div class="np-body">
+              <span class="np-label">now playing</span>
+              <span class="np-title">teaching assistant &amp; research</span>
+              <span class="np-sub">cse 344 · uw raivn lab / ai2</span>
+              <div class="wave" id="wave" aria-hidden="true"></div>
+            </div>
+          </div>
+        </div>
+        <!-- drop your photo at img/me.jpg (portrait, ~4:5); the label shows until it exists -->
+        <figure class="portrait">
+          <span class="mono">your photo<br>img/me.jpg</span>
+          <img src="img/me.jpg" alt="Renpei Cai" onerror="this.remove()">
+        </figure>
+        <p class="vstrip">python · pytorch · typescript · react · react native · node · postgres · aws</p>
+      </section>
+
+      <section id="work" class="block">
+        <div class="sec-head">
+          <h2>side a — experience</h2>
+          <span class="mono">5 tracks</span>
+        </div>
+        <ol class="tracks">
+          <li>
+            <span class="n mono">01</span>
+            <div class="body">
+              <span class="org">uw cse 344 <span class="role">— teaching assistant</span></span>
+              <span class="line">leading a weekly section of 30 students in sql, relational databases and database design.</span>
+            </div>
+            <span class="when mono">sep 2026 – now</span>
+          </li>
+          <li>
+            <span class="n mono">02</span>
+            <div class="body">
+              <span class="org">uw raivn lab / ai2 <span class="role">— student researcher, computer vision</span></span>
+              <span class="line">distributed data pipelines for 219k videos and fsdp training across 8–16 gpus to fine-tune a multi-view video generation model.</span>
+            </div>
+            <span class="when mono">dec 2025 – sep 2026</span>
+          </li>
+          <li>
+            <span class="n mono">03</span>
+            <div class="body">
+              <span class="org">seven stars food <span class="role">— software engineering intern</span></span>
+              <span class="line">full-stack ordering system for a seafood wholesaler, powering $180k+ in monthly orders and cutting 28 hours of invoice entry a week.</span>
+            </div>
+            <span class="when mono">mar – jun 2026</span>
+          </li>
+          <li>
+            <span class="n mono">04</span>
+            <div class="body">
+              <span class="org"><a href="https://aclanthology.org/2025.insights-1.14/" target="_blank" rel="noopener">algoverse ↗</a> <span class="role">— student researcher, llms &amp; tool use</span></span>
+              <span class="line"><a class="inline-link" href="https://aclanthology.org/2025.insights-1.14/" target="_blank" rel="noopener">skt-tool</a>: up to 70% fewer unnecessary llm tool calls with accuracy within 5%. published at naacl insights 2025.</span>
+            </div>
+            <span class="when mono">jan – mar 2025</span>
+          </li>
+          <li>
+            <span class="n mono">05</span>
+            <div class="body">
+              <span class="org">permias seattle <span class="role">— volunteer software engineer</span></span>
+              <span class="line">event payment platform that processed 5k+ transactions in 10 hours for 500+ users.</span>
+            </div>
+            <span class="when mono">sep 2024 – mar 2025</span>
+          </li>
+        </ol>
+      </section>
+
+      <section id="projects" class="block">
+        <div class="sec-head"><h2>side b — projects</h2></div>
+        <div class="grid">
+        <article class="proj">
+            <!-- to add a screenshot: <img src="img/seven-stars.jpg" alt=""> inside .cover -->
+            <a class="cover pop" href="https://github.com/Avery072/remix-studio" target="_blank" rel="noopener" aria-label="remix studio on github"><img src="img/remix-studio-cover.jpg" data-full="img/remix-studio-full.jpg" alt="remix studio editor with colour-coded stem waveforms, song sections and an ai-suggested filter sweep" loading="lazy"><span class="shade" aria-hidden="true"></span><span class="stat">ai x art</span><span class="mono">remix studio</span></a>
+            <h3><a href="https://github.com/Avery072/remix-studio" target="_blank" rel="noopener">remix studio ↗</a></h3>
+            <p>my favorite project yet. upload a song, split it into stems and remix it in plain english: a claude agent turns requests like "filter sweep before the chorus" into real audio edits; can manipulate and create with any segment of the imported audio!</p>
+            <span class="mono">next.js · typescript · claude · replicate · web audio</span>
+          </article>
+          <article class="proj">
+            <div class="cover pop"><img src="img/marys-place-cover.jpg" data-full="img/marys-place-full.jpg" alt="illuminated mary's place sign" loading="lazy"><span class="shade" aria-hidden="true"></span><span class="stat">−40%</span><span class="mono">intake time</span></div>
+            <h3>mary's place</h3>
+            <p>multilingual shelter intake for 20+ families a day, on a normalized dataverse schema with rbac.</p>
+            <span class="mono">power pages · dataverse · power automate</span>
+          </article>
+          <article class="proj">
+            <a class="cover pop" href="https://github.com/Avery072/fitcheck" target="_blank" rel="noopener" aria-label="fitcheck on github"><img src="img/fitcheck-cover.jpg" data-full="img/fitcheck-full.jpg" alt="fitcheck generating a virtual try-on of plaid pants from a uniqlo product page" loading="lazy"><span class="shade" aria-hidden="true"></span><span class="stat">try-on</span><span class="mono">dubhacks 2025</span></a>
+            <h3><a href="https://github.com/Avery072/fitcheck" target="_blank" rel="noopener">fitcheck ↗</a></h3>
+            <p>virtual try-on from any e-commerce page, with async ai generation and job tracking.</p>
+            <span class="mono">react · aws bedrock · lambda · dynamodb</span>
+          </article>
+          <article class="proj">
+            <div class="cover pop"><img src="img/permias-cover.jpg" data-full="img/permias-full.jpg" alt="permias seattle members in batik holding the club banner" loading="lazy"><span class="shade" aria-hidden="true"></span><span class="stat">5k+ txns</span><span class="mono">in 10 hours</span></div>
+            <h3>permias payments</h3>
+            <p>react/firebase event payments with live inventory, kpi dashboards and automated wallet top-ups.</p>
+            <span class="mono">react · firebase · python</span>
+          </article>
+        </div>
+      </section>
+
+      <section id="research" class="block">
+        <div class="sec-head">
+          <h2>b-side — research</h2>
+          <span class="mono">one frame in, new camera paths out</span>
+        </div>
+                <div class="frames">
+          <div class="frame pop"><video src="img/omniview-vid1.mp4" autoplay muted loop playsinline preload="metadata" aria-label="research video: rooftop at dusk"></video><span class="cap">rooftop at dusk</span></div>
+          <div class="frame pop"><video src="img/omniview-vid2.mp4" autoplay muted loop playsinline preload="metadata" aria-label="research video: garden light"></video><span class="cap">garden light</span></div>
+          <div class="frame pop"><video src="img/omniview-vid3.mp4" autoplay muted loop playsinline preload="metadata" aria-label="research video: canal reflections"></video><span class="cap">canal reflections</span></div>
+          <div class="frame pop"><video src="img/omniview-vid4.mp4" autoplay muted loop playsinline preload="metadata" aria-label="research video: the ghost"></video><span class="cap">the ghost</span></div>
+        </div>
+        <div class="research-text">
+          <p>multi-view video generation at uw raivn lab / ai2: fine-tuned on 219k videos across 8–16 gpus, matching a state-of-the-art baseline on unseen scenes.</p>
+          <p><a class="inline-link" href="https://aclanthology.org/2025.insights-1.14/" target="_blank" rel="noopener">skt-tool, naacl insights 2025 ↗</a>: cut unnecessary llm tool calls by up to 70% while keeping accuracy within 5%.</p>
+        </div>
+        <p class="mono" style="margin-top:16px;font-size:12px">psnr 16.31 · ssim 0.522 · lpips 0.465</p>
+      </section>
+
+      <section class="block duo">
+        <div id="music">
+          <h2>on the decks</h2>
+          <p>i dj as chai: afro-house, baile funk, jersey club. chapter dj for alpha sigma phi, and on seattle club lineups like back2school at ora.</p>
+          <!-- put your soundcloud / mixcloud link here -->
+          <a class="play pop" href="#" target="_blank" rel="noopener">press play — latest mix</a>
+        </div>
+        <div>
+          <h2>liner notes</h2>
+          <ul class="notes">
+            <li><span class="mono">tca · </span>director of membership: leading recruitment for 150+ applications a cycle with a 10-person exec team</li>
+            <li><span class="mono">cse 344 · </span>teaching 30 students sql and database design every week</li>
+            <li><span class="mono">house of wisdom · </span>tutored esl, math and coding for immigrant students</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="skills" class="block">
+        <div class="sec-head">
+          <h2>credits — skills</h2>
+          <span class="mono">what's in the crate</span>
+        </div>
+        <ul class="skills">
+          <li>
+            <span class="cat mono">languages</span>
+            <div class="chips"><span class="chip">python</span><span class="chip">c</span><span class="chip">c++</span><span class="chip">typescript</span><span class="chip">sql</span></div>
+          </li>
+          <li>
+            <span class="cat mono">ml &amp; research</span>
+            <div class="chips"><span class="chip">pytorch</span><span class="chip">fsdp / multi-gpu training</span><span class="chip">computer vision</span><span class="chip">llm tool use</span></div>
+          </li>
+          <li>
+            <span class="cat mono">web &amp; mobile</span>
+            <div class="chips"><span class="chip">react</span><span class="chip">react native</span><span class="chip">node</span><span class="chip">express</span></div>
+          </li>
+          <li>
+            <span class="cat mono">data &amp; cloud</span>
+            <div class="chips"><span class="chip">postgres</span><span class="chip">dynamodb</span><span class="chip">firebase</span><span class="chip">aws lambda</span><span class="chip">aws bedrock</span><span class="chip">railway ci/cd</span></div>
+          </li>
+          <li>
+            <span class="cat mono">ai &amp; platforms</span>
+            <div class="chips"><span class="chip">claude</span><span class="chip">replicate</span><span class="chip">power pages</span><span class="chip">dataverse</span><span class="chip">power automate</span></div>
+          </li>
+        </ul>
+      </section>
+    </main>
+
+    <footer id="resume">
+      <a class="big-link pop" href="resume.pdf" target="_blank" rel="noopener">resume.pdf ↗</a>
+      <div class="links">
+        <a href="mailto:renpeicai.work@gmail.com">renpeicai.work@gmail.com</a>
+        <a href="https://github.com/Avery072" target="_blank" rel="noopener">github/avery072</a>
+        <a href="https://linkedin.com/in/renpeicai" target="_blank" rel="noopener">linkedin/renpeicai</a>
+      </div>
+    </footer>
+  </div>
+</div>
+
+<script>
+  // animated "now playing" waveform
+  (function () {
+    var hs = [4,7,11,6,9,14,10,5,8,13,16,12,7,5,9,15,18,11,6,8,12,17,14,9,6,10,13,8,5,7,11,16,12,9,6,4,8,12,15,10,7,5,9,13,11,7,5,4];
+    var wave = document.getElementById('wave');
+    hs.forEach(function (h, i) {
+      var b = document.createElement('span');
+      if (i < 22) b.className = 'on';
+      b.style.height = h + 'px';
+      b.style.animationDuration = (0.55 + (h % 5) * 0.16).toFixed(2) + 's';
+      b.style.animationDelay = '-' + (i * 0.07).toFixed(2) + 's';
+      wave.appendChild(b);
+    });
+  })();
+
+  // "press play" while the mix link is still a placeholder: shake, red flash, "coming soon" error
+  (function () {
+    var btn = document.querySelector('.play');
+    if (!btn) return;
+    var calm = matchMedia('(prefers-reduced-motion: reduce)').matches, toast = null;
+    btn.addEventListener('click', function (e) {
+      if (btn.getAttribute('href') !== '#') return;   // a real link was added: let it through
+      e.preventDefault();
+
+      if (!calm) {
+        // shake the content (not .page itself, so the fixed meteor canvas stays put)
+        document.querySelector('.wrap').animate([
+          { transform: 'translate(0,0)' }, { transform: 'translate(-9px,3px) rotate(-.3deg)' },
+          { transform: 'translate(8px,-4px) rotate(.3deg)' }, { transform: 'translate(-6px,2px)' },
+          { transform: 'translate(5px,-2px)' }, { transform: 'translate(-3px,1px)' },
+          { transform: 'translate(2px,0)' }, { transform: 'translate(0,0)' }
+        ], { duration: 420, easing: 'ease-out' });
+      }
+
+      // quick red flash
+      var flash = document.createElement('div');
+      flash.className = 'err-flash';
+      document.body.appendChild(flash);
+      flash.animate([{ opacity: 0 }, { opacity: 1, offset: .12 }, { opacity: 0 }], { duration: 480, easing: 'ease-out' })
+        .onfinish = function () { flash.remove(); };
+
+      // error toast above the button
+      if (toast) toast.remove();
+      var t = toast = document.createElement('div');
+      t.className = 'err-toast';
+      t.setAttribute('role', 'alert');
+      t.innerHTML = '<b>⚠ error</b><span>coming soon</span>';
+      document.body.appendChild(t);
+      var r = btn.getBoundingClientRect(), w = t.offsetWidth, h = t.offsetHeight;
+      var x = Math.max(12, Math.min(innerWidth - w - 12, r.left));
+      var y = r.top - h - 14 > 12 ? r.top - h - 14 : r.bottom + 14;
+      var at = function (dx, dy) { return 'translate(' + (x + dx) + 'px,' + (y + dy) + 'px)'; };
+      t.animate(calm ? [{ opacity: 0, transform: at(0, 0) }, { opacity: 1, transform: at(0, 0), offset: .1 },
+                        { opacity: 1, transform: at(0, 0), offset: .85 }, { opacity: 0, transform: at(0, 0) }]
+                     : [{ opacity: 0, transform: at(0, 8) }, { opacity: 1, transform: at(-6, 0), offset: .04 },
+                        { transform: at(5, 0), offset: .07 }, { transform: at(-3, 0), offset: .1 },
+                        { opacity: 1, transform: at(0, 0), offset: .13 }, { opacity: 1, transform: at(0, 0), offset: .85 },
+                        { opacity: 0, transform: at(0, -6) }],
+        { duration: 1900, easing: 'ease-out', fill: 'both' }).onfinish = function () {
+          t.remove(); if (toast === t) toast = null;
+        };
+    });
+  })();
+
+  // motion layer: name split, scroll reveals, cursor spotlight
+  (function () {
+    if (!document.documentElement.classList.contains('motion')) return;
+
+    // split the hero name into letters
+    var name = document.querySelector('.name');
+    var text = name.textContent, i = 0;
+    name.setAttribute('aria-label', text);
+    name.innerHTML = text.split(' ').map(function (w) {
+      return '<span class="w" aria-hidden="true">' + w.split('').map(function (c) {
+        return '<span class="c" style="--i:' + (i++) + '">' + c + '</span>';
+      }).join('') + '</span>';
+    }).join(' ');
+    name.classList.add('split');
+
+    // hero copy follows the name
+    ['.kicker', '.intro', '.np'].forEach(function (s, k) {
+      var el = document.querySelector(s);
+      el.classList.add('rv');
+      el.style.setProperty('--d', (650 + k * 130) + 'ms');
+    });
+
+    // everything below the fold, staggered by position among siblings
+    document.querySelectorAll('.sec-head, .tracks li, .proj, .frames, .research-text p, #research > p.mono, .duo > div, .skills li, footer > *')
+      .forEach(function (el) {
+        var idx = Array.prototype.indexOf.call(el.parentNode.children, el);
+        el.classList.add('rv');
+        el.style.setProperty('--d', Math.min(idx, 6) * 90 + 'ms');
+      });
+
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+      });
+    }, { rootMargin: '0px 0px -8% 0px' });
+    document.querySelectorAll('.rv, section.block, footer').forEach(function (el) { io.observe(el); });
+
+    // soft spotlight that follows the cursor (mouse devices only)
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var page = document.querySelector('.page'), spot = document.querySelector('.spot'), raf;
+      page.addEventListener('pointermove', function (e) {
+        var r = page.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+        cancelAnimationFrame(raf);
+        raf = requestAnimationFrame(function () {
+          spot.style.setProperty('--mx', x + 'px');
+          spot.style.setProperty('--my', y + 'px');
+          spot.classList.add('on');
+        });
+      });
+      page.addEventListener('pointerleave', function () { spot.classList.remove('on'); });
+
+      // 3d tilt on project covers
+      var MAX_TILT = 10; // degrees
+      document.querySelectorAll('.cover').forEach(function (card) {
+        card.classList.add('tilt');
+        card.addEventListener('pointermove', function (e) {
+          var r = card.getBoundingClientRect();
+          var px = (e.clientX - r.left) / r.width - 0.5;   // -0.5 .. 0.5
+          var py = (e.clientY - r.top) / r.height - 0.5;
+          card.classList.add('tilting');
+          card.style.transform = 'perspective(700px) rotateX(' + (-py * MAX_TILT * 2).toFixed(2) +
+            'deg) rotateY(' + (px * MAX_TILT * 2).toFixed(2) + 'deg) scale(1.05)';
+        });
+        card.addEventListener('pointerleave', function () {
+          card.classList.remove('tilting');
+          card.style.transform = '';
+        });
+      });
+    }
+
+    // hologram: hovering a cover/frame whose image is cropped projects the full image
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var holo = document.createElement('div'), hin = document.createElement('div');
+      var himg = document.createElement('img'), htag = document.createElement('span');
+      var beam = document.createElement('div');
+      holo.className = 'holo'; hin.className = 'holo-inner'; htag.className = 'holo-tag'; beam.className = 'beam';
+      htag.textContent = '◉ full view'; himg.alt = '';
+      holo.setAttribute('aria-hidden', 'true'); beam.setAttribute('aria-hidden', 'true');
+      hin.appendChild(himg); hin.appendChild(htag); holo.appendChild(hin);
+      document.body.appendChild(beam); document.body.appendChild(holo);
+      var holoCard = null, hAnim = null, bAnim = null;
+      var clamp = function (v, a, b) { return Math.max(a, Math.min(b, v)); };
+
+      function project(card, src, nw, nh) {
+        var r = card.getBoundingClientRect();
+        var sc = Math.min(Math.min(640, innerWidth * .62) / nw, innerHeight * .55 / nh, 1.5);
+        var w = nw * sc, h = nh * sc, gap = 40, top, where;
+        var left = clamp(r.left + r.width / 2 - w / 2, 12, innerWidth - w - 12);
+        if (r.top - gap - h >= 12) { top = r.top - gap - h; where = 'above'; }
+        else if (r.bottom + gap + h <= innerHeight - 12) { top = r.bottom + gap; where = 'below'; }
+        else { top = clamp(r.top + r.height / 2 - h / 2, 12, innerHeight - h - 12); where = 'over'; }
+        holo.style.left = left + 'px'; holo.style.top = top + 'px';
+        holo.style.width = w + 'px'; holo.style.height = h + 'px';
+        himg.src = src;
+        hin.style.transformOrigin = where === 'above' ? '50% 100%' : where === 'below' ? '50% 0' : '50% 50%';
+
+        // light beam from the card to the hologram
+        if (where !== 'over') {
+          var ins = r.width * .18, cy = where === 'above' ? r.top : r.bottom, hy = where === 'above' ? top + h : top;
+          beam.style.clipPath = 'polygon(' + (r.left + ins) + 'px ' + cy + 'px,' + (r.right - ins) + 'px ' + cy + 'px,' +
+            (left + w) + 'px ' + hy + 'px,' + left + 'px ' + hy + 'px)';
+          var near = 'rgba(244,242,234,.12)', far = 'rgba(244,242,234,0)';
+          beam.style.background = where === 'above'
+            ? 'linear-gradient(180deg,' + far + ' ' + hy + 'px,' + near + ' ' + cy + 'px)'
+            : 'linear-gradient(180deg,' + near + ' ' + cy + 'px,' + far + ' ' + hy + 'px)';
+          if (bAnim) bAnim.cancel();
+          bAnim = beam.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 260, fill: 'both' });
+        }
+
+        if (hAnim) hAnim.cancel();
+        hAnim = hin.animate([
+          { opacity: 0, transform: 'translateY(10px) scale(.92,.04)', filter: 'blur(6px) brightness(1.4)' },
+          { opacity: 1, transform: 'translateY(0) scale(.98,1.01)', filter: 'blur(0) brightness(1.1)', offset: .5 },
+          { opacity: .85, offset: .62 },
+          { opacity: 1, transform: 'none', filter: 'blur(0) brightness(1)' }
+        ], { duration: 560, delay: 90, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' });
+      }
+
+      function hideHolo() {
+        if (!holoCard) return;
+        holoCard = null;
+        if (hAnim) hAnim.cancel();
+        hAnim = hin.animate([{ opacity: 1, transform: 'none', filter: 'blur(0)' }, { opacity: 0, transform: 'scale(.96,.04)', filter: 'blur(6px)' }],
+          { duration: 220, easing: 'ease-in', fill: 'both' });
+        if (bAnim) bAnim.cancel();
+        bAnim = beam.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 180, fill: 'both' });
+      }
+
+      document.querySelectorAll('.cover img, .frame img').forEach(function (im) {
+        var card = im.closest('.cover, .frame');
+        card.addEventListener('pointerenter', function () {
+          var src = im.dataset.full || im.currentSrc || im.src, probe = new Image();
+          holoCard = card;
+          probe.onload = function () { if (holoCard === card) project(card, src, probe.naturalWidth, probe.naturalHeight); };
+          probe.src = src;
+        });
+        card.addEventListener('pointerleave', hideHolo);
+      });
+      addEventListener('scroll', hideHolo, { passive: true });
+    }
+
+    // research videos: only play while on screen
+    var vids = document.querySelectorAll('.frame video');
+    var vio = new IntersectionObserver(function (es) {
+      es.forEach(function (e) { e.isIntersecting ? e.target.play().catch(function () {}) : e.target.pause(); });
+    });
+    vids.forEach(function (v) { vio.observe(v); });
+
+    // link hover: little air-bubble burst with a "click me!" bubble
+    if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+      var lastPop = new WeakMap(), label = null;
+      document.addEventListener('pointerover', function (e) {
+        var a = e.target.closest && e.target.closest('a[href]');
+        if (!a || a.getAttribute('href') === '#' || a.contains(e.relatedTarget)) return;
+        var now = performance.now();
+        if (now - (lastPop.get(a) || 0) < 700) return;   // don't spam on the same link
+        lastPop.set(a, now);
+        var x = e.clientX, y = e.clientY;
+
+        // bubbles burst outward, wobble up a little, then pop
+        for (var i = 0; i < 9; i++) {
+          var b = document.createElement('span'), size = 5 + Math.random() * 12;
+          var ang = Math.random() * Math.PI * 2, dist = 28 + Math.random() * 46;
+          var tx = Math.cos(ang) * dist, ty = Math.sin(ang) * dist - 18 - Math.random() * 20;
+          b.className = 'bubble';
+          b.style.width = b.style.height = size + 'px';
+          document.body.appendChild(b);
+          var at = function (dx, dy, sc) {
+            return 'translate(' + (x - size / 2 + dx) + 'px,' + (y - size / 2 + dy) + 'px) scale(' + sc + ')';
+          };
+          b.animate([
+            { transform: at(0, 0, .2), opacity: 0 },
+            { transform: at(tx * .7, ty * .7, 1), opacity: 1, offset: .35 },
+            { transform: at(tx, ty - 8, 1), opacity: .9, offset: .8 },
+            { transform: at(tx, ty - 10, 1.6), opacity: 0 }
+          ], { duration: 650 + Math.random() * 350, delay: Math.random() * 80,
+               easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }).onfinish = function () { this.effect.target.remove(); };
+        }
+
+        // the "click me!" bubble pops in above the cursor, floats up and pops
+        if (label) label.remove();
+        var l = label = document.createElement('span');
+        l.className = 'clickme';
+        l.textContent = 'click me!';
+        document.body.appendChild(l);
+        var w = l.offsetWidth, h = l.offsetHeight;
+        var lx = Math.max(8, Math.min(innerWidth - w - 8, x - w / 2)), ly = Math.max(8, y - h - 26);
+        var pos = function (dy, sc) { return 'translate(' + lx + 'px,' + (ly + dy) + 'px) scale(' + sc + ')'; };
+        l.animate([
+          { transform: pos(14, .2), opacity: 0 },
+          { transform: pos(-2, 1.12), opacity: 1, offset: .14 },
+          { transform: pos(0, 1), opacity: 1, offset: .24 },
+          { transform: pos(-14, 1), opacity: 1, offset: .8 },
+          { transform: pos(-18, 1.35), opacity: 0 }
+        ], { duration: 1500, easing: 'cubic-bezier(.16,1,.3,1)', fill: 'both' }).onfinish = function () {
+          l.remove(); if (label === l) label = null;
+        };
+      });
+    }
+
+    // meteor: lives on the page (scrolls away with content), bounces off the
+    // page edges, and leaves a colour-cycling streak plus a trail of dust, sparks and embers
+    (function () {
+      var canvas = document.querySelector('.orb'), ctx = canvas.getContext('2d');
+      var SPEED = 420;               // cruising speed, px per second
+      var FLING = 2.2;               // how hard scrolling throws the meteor
+      var MAX_SPEED = 2200;          // speed cap when flung
+      var RECOVER = 1.2;             // how quickly it settles back to cruising speed
+      var H_BIAS = 1.5;              // how strongly it prefers horizontal travel (0 = no preference)
+      var HUE_SPEED = 30;            // trail colour shift, degrees per second (360 = full cycle)
+      var HUE_START = 215;           // starting hue (215 = blue, matches the head)
+      var STREAK = 22;               // length of the tapered streak (in frames)
+      var C = {
+        halo:  '45,80,220',          // electric blue glow around the head
+        core:  '18,30,105',          // midnight blue body
+        hot:   '214,226,255',        // pale hot centre
+        dust:  '20,34,120',          // soft trail puffs
+        spark: '190,210,255',        // tiny pale-blue sparks
+        ember: '247,242,74'          // occasional yellow ember (site accent)
+      };
+      var W, H, R, dpr = Math.min(devicePixelRatio || 1, 2);
+      var parts = [], path = [];
+      var dustCache = {};
+      function dustSprite(h) {         // trail puff tinted with the current hue, cached in 6-degree steps
+        var key = Math.round(((h % 360) + 360) % 360 / 6) * 6;
+        if (!dustCache[key]) {
+          var c = document.createElement('canvas'), s = c.getContext('2d'), r = 64;
+          c.width = c.height = r * 2;
+          var g = s.createRadialGradient(r, r, 0, r, r, r);
+          g.addColorStop(0, 'hsla(' + key + ',90%,42%,.9)');
+          g.addColorStop(.5, 'hsla(' + key + ',90%,35%,.45)');
+          g.addColorStop(1, 'hsla(' + key + ',90%,30%,0)');
+          s.fillStyle = g; s.fillRect(0, 0, r * 2, r * 2);
+          dustCache[key] = c;
+        }
+        return dustCache[key];
+      }
+
+      function sprite(color, stops) {
+        var c = document.createElement('canvas'), s = c.getContext('2d'), r = 64;
+        c.width = c.height = r * 2;
+        var g = s.createRadialGradient(r, r, 0, r, r, r);
+        stops.forEach(function (st) { g.addColorStop(st[0], 'rgba(' + color + ',' + st[1] + ')'); });
+        s.fillStyle = g; s.fillRect(0, 0, r * 2, r * 2);
+        return c;
+      }
+      var S = {
+        halo: sprite(C.halo, [[0, .8], [.35, .35], [1, 0]]),
+        core: sprite(C.core, [[0, 1], [.5, .8], [1, 0]]),
+        hot:  sprite(C.hot,  [[0, 1], [.4, .6], [1, 0]]),
+        dust: sprite(C.dust, [[0, .9], [.5, .45], [1, 0]])
+      };
+
+      function resize() {
+        W = innerWidth; H = innerHeight;
+        canvas.width = W * dpr; canvas.height = H * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        R = W < 760 ? 14 : 20;      // head radius
+      }
+      resize();
+      addEventListener('resize', resize);
+
+      // position is in PAGE coordinates, not screen coordinates
+      var x = W * (0.2 + Math.random() * 0.6), y = H * (0.3 + Math.random() * 0.4);
+      var a0 = Math.random() * Math.PI * 2;
+      var vx = Math.cos(a0) * SPEED, vy = Math.sin(a0) * SPEED;
+      var turn = 0, last = performance.now(), lastSy = scrollY, scrollVel = 0, hue = HUE_START;
+      var rnd = function (a, b) { return a + Math.random() * (b - a); };
+
+      function emit(px, py, dx, dy) {
+        var k = Math.random(), ex = px + (x - px) * k, ey = py + (y - py) * k;
+        var nx = -dy, ny = dx;     // perpendicular to travel
+        // dust puffs
+        for (var i = 0; i < 2; i++) {
+          var s = rnd(-25, 25);
+          parts.push({ type: 'dust', hue: hue, x: ex + nx * rnd(-6, 6), y: ey + ny * rnd(-6, 6),
+            vx: -dx * rnd(10, 40) + nx * s, vy: -dy * rnd(10, 40) + ny * s,
+            r: rnd(R * .5, R * 1.1), life: rnd(1, 1.8), t: 0 });
+        }
+        // sparks spraying backwards
+        for (var j = 0; j < 3; j++) {
+          var sp = rnd(-70, 70), back = rnd(40, 170);
+          parts.push({ type: Math.random() < .1 ? 'ember' : 'spark', hue: hue + rnd(-25, 25), x: ex, y: ey,
+            vx: -dx * back + nx * sp, vy: -dy * back + ny * sp,
+            r: rnd(1, 2.6), life: rnd(.45, 1.1), t: 0 });
+        }
+      }
+
+      function frame(now) {
+        var dt = Math.min((now - last) / 1000, 0.05); last = now;
+        var docH = document.documentElement.scrollHeight, sy = scrollY;
+
+        hue = (hue + HUE_SPEED * dt) % 360;
+
+        // scroll momentum: measure scroll speed (smoothed) and push the meteor with it
+        if (dt > 0) {
+          var raw = (sy - lastSy) / dt;
+          scrollVel += (raw - scrollVel) * Math.min(1, dt * 12);
+        }
+        lastSy = sy;
+        vy += scrollVel * FLING * dt;
+
+        // wander: rotate the velocity a little at random
+        turn += (Math.random() - 0.5) * 9 * dt;
+        turn *= 0.97;
+        var rot = turn * dt, cr = Math.cos(rot), sr = Math.sin(rot);
+        var nvx = vx * cr - vy * sr; vy = vx * sr + vy * cr; vx = nvx;
+
+        // horizontal bias: gently steer toward whichever horizontal direction is closer
+        var heading = Math.atan2(vy, vx), goal = vx >= 0 ? 0 : Math.PI;
+        var diff = Math.atan2(Math.sin(goal - heading), Math.cos(goal - heading));
+        var steer = diff * Math.min(1, dt * H_BIAS);
+        cr = Math.cos(steer); sr = Math.sin(steer);
+        nvx = vx * cr - vy * sr; vy = vx * sr + vy * cr; vx = nvx;
+
+        // speed eases back toward cruising speed after a fling
+        var sp = Math.hypot(vx, vy) || 1;
+        var target = Math.min(MAX_SPEED, sp + (SPEED - sp) * Math.min(1, dt * RECOVER));
+        vx *= target / sp; vy *= target / sp; sp = target;
+
+        var px = x, py = y;
+        x += vx * dt; y += vy * dt;
+
+        // bounce off left/right of the screen and top/bottom of the page
+        if (x < R)        { x = R;        vx = Math.abs(vx); }
+        if (x > W - R)    { x = W - R;    vx = -Math.abs(vx); }
+        if (y < R)        { y = R;        vy = Math.abs(vy); }
+        if (y > docH - R) { y = docH - R; vy = -Math.abs(vy); }
+        var dx = vx / sp, dy = vy / sp;
+
+        path.push([x, y, hue]); if (path.length > STREAK) path.shift();
+        // faster = denser trail
+        for (var n = Math.min(4, Math.max(1, Math.round(sp / SPEED))); n > 0; n--) emit(px, py, dx, dy);
+
+        ctx.clearRect(0, 0, W, H);
+        var onScreen = function (cy, r) { return cy - sy + r > 0 && cy - sy - r < H; };
+
+        // dust first (underneath)
+        for (var i = parts.length - 1; i >= 0; i--) {
+          var p = parts[i];
+          p.t += dt / p.life;
+          if (p.t >= 1) { parts.splice(i, 1); continue; }
+          p.x += p.vx * dt; p.y += p.vy * dt;
+          p.vx *= 0.985; p.vy *= 0.985;
+          if (p.type !== 'dust' || !onScreen(p.y, p.r * 2)) continue;
+          var f = 1 - p.t, rr = p.r * (1 + p.t * 1.4);
+          ctx.globalAlpha = 0.35 * f * f;
+          ctx.drawImage(dustSprite(p.hue), p.x - rr, p.y - sy - rr, rr * 2, rr * 2);
+        }
+
+        // tapered streak along the recent path
+        ctx.lineCap = 'round';
+        for (var s = 1; s < path.length; s++) {
+          var t = s / path.length;
+          ctx.globalAlpha = 0.55 * t * t;
+          ctx.strokeStyle = 'hsl(' + Math.round(path[s][2]) + ',100%,60%)';
+          ctx.lineWidth = R * 1.1 * t;
+          ctx.beginPath();
+          ctx.moveTo(path[s - 1][0], path[s - 1][1] - sy);
+          ctx.lineTo(path[s][0], path[s][1] - sy);
+          ctx.stroke();
+        }
+
+        // sparks and embers (on top), shrinking as they die
+        for (var m = 0; m < parts.length; m++) {
+          var q = parts[m];
+          if (q.type === 'dust' || !onScreen(q.y, 4)) continue;
+          var g = 1 - q.t;
+          ctx.globalAlpha = 0.9 * g;
+          ctx.fillStyle = q.type === 'ember' ? 'rgb(' + C.ember + ')' : 'hsl(' + Math.round(q.hue) + ',100%,72%)';
+          ctx.beginPath();
+          ctx.arc(q.x, q.y - sy, q.r * (0.4 + 0.6 * g), 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // the head: glow, body, hot centre
+        if (onScreen(y, R * 3)) {
+          var pulse = 1 + Math.sin(now / 90) * 0.08, hy = y - sy;
+          ctx.globalAlpha = 0.6;  ctx.drawImage(S.halo, x - R * 3 * pulse, hy - R * 3 * pulse, R * 6 * pulse, R * 6 * pulse);
+          ctx.globalAlpha = 0.9;  ctx.drawImage(S.core, x - R * 1.3, hy - R * 1.3, R * 2.6, R * 2.6);
+          ctx.globalAlpha = 0.85; ctx.drawImage(S.hot,  x - R * .6,  hy - R * .6,  R * 1.2, R * 1.2);
+        }
+
+        requestAnimationFrame(frame);
+      }
+      requestAnimationFrame(frame);
+    })();
+  })();
+</script>
+</body>
+</html>
